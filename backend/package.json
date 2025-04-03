@@ -14,6 +14,7 @@
     "@prisma/client": "^6.5.0",
     "@types/node": "^22.13.14",
     "express": "^4.21.2",
+    "prisma": "^6.5.0",
     "save": "^2.9.0",
     "save-dev": "^0.0.1-security",
     "typescript": "^5.8.2"

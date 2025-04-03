@@ -29,19 +29,28 @@ const Dashboard: React.FC = () => {
         const productRes = await fetch("/api/products");
         const orderRes = await fetch("/api/orders");
 
-        if (productRes.ok && orderRes.ok) {
-          const productsData = await productRes.json();
-          const ordersData = await orderRes.json();
-
-          setTotalProducts(productsData.length); 
-          setTotalOrders(ordersData.length);
-          setRecentOrders(ordersData.slice(0, 3));
-          setLatestProducts(productsData.slice(0, 3));
-        } else {
-          console.error("Error fetching data from the server");
+        if (!productRes.ok) {
+          throw new Error("Failed to fetch products");
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        if (!orderRes.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const productsData = await productRes.json();
+        const ordersData = await orderRes.json();
+
+        setTotalProducts(productsData.length);
+        setTotalOrders(ordersData.length);
+        setRecentOrders(ordersData.slice(0, 3));
+        setLatestProducts(productsData.slice(0, 3));
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Error fetching data:", error.message);
+          alert(`Error fetching data: ${error.message}`);
+        } else {
+          console.error("Unknown error occurred", error);
+          alert("An unknown error occurred");
+        }
       }
     };
 
