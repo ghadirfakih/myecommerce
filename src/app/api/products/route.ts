@@ -1,13 +1,11 @@
-// src/app/api/products/route.ts
-
-import { NextResponse } from 'next/server';
-import  prisma  from '../../../../backend/prisma'; // Adjust based on your prisma setup
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
 
 // GET method to fetch products
 export async function GET() {
   try {
     const products = await prisma.product.findMany(); // Fetch all products
-    console.log(products); 
+    console.log(products);
     return NextResponse.json(products);
   } catch (error) {
     console.error(error);

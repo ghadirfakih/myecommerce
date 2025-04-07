@@ -1,12 +1,8 @@
-// pages/api/orders/route.ts
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const orders = await prisma.orders.findMany({
+    const orders = await prisma.order.findMany({
       include: {
         user: true,
         product: true,
@@ -16,12 +12,15 @@ export async function GET() {
   } catch (error) {
     if (error instanceof Error) {
       return new Response(
-        JSON.stringify({ message: 'Error fetching orders', error: error.message }),
+        JSON.stringify({
+          message: "Error fetching orders",
+          error: error.message,
+        }),
         { status: 500 }
       );
     }
     return new Response(
-      JSON.stringify({ message: 'An unknown error occurred' }),
+      JSON.stringify({ message: "An unknown error occurred" }),
       { status: 500 }
     );
   }
@@ -33,12 +32,12 @@ export async function POST(req: Request) {
 
     if (!userId || !productId || !totalPrice || !status) {
       return new Response(
-        JSON.stringify({ message: 'Missing required fields' }),
+        JSON.stringify({ message: "Missing required fields" }),
         { status: 400 }
       );
     }
 
-    const newOrder = await prisma.orders.create({
+    const newOrder = await prisma.order.create({
       data: {
         userId,
         productId,
@@ -51,12 +50,15 @@ export async function POST(req: Request) {
   } catch (error) {
     if (error instanceof Error) {
       return new Response(
-        JSON.stringify({ message: 'Error creating order', error: error.message }),
+        JSON.stringify({
+          message: "Error creating order",
+          error: error.message,
+        }),
         { status: 500 }
       );
     }
     return new Response(
-      JSON.stringify({ message: 'An unknown error occurred' }),
+      JSON.stringify({ message: "An unknown error occurred" }),
       { status: 500 }
     );
   }
@@ -68,12 +70,12 @@ export async function PUT(req: Request) {
 
     if (!orderId || !userId || !productId || !totalPrice || !status) {
       return new Response(
-        JSON.stringify({ message: 'Missing required fields' }),
+        JSON.stringify({ message: "Missing required fields" }),
         { status: 400 }
       );
     }
 
-    const updatedOrder = await prisma.orders.update({
+    const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
         userId,
@@ -87,12 +89,15 @@ export async function PUT(req: Request) {
   } catch (error) {
     if (error instanceof Error) {
       return new Response(
-        JSON.stringify({ message: 'Error updating order', error: error.message }),
+        JSON.stringify({
+          message: "Error updating order",
+          error: error.message,
+        }),
         { status: 500 }
       );
     }
     return new Response(
-      JSON.stringify({ message: 'An unknown error occurred' }),
+      JSON.stringify({ message: "An unknown error occurred" }),
       { status: 500 }
     );
   }
@@ -103,29 +108,31 @@ export async function DELETE(req: Request) {
     const { orderId } = await req.json();
 
     if (!orderId) {
-      return new Response(
-        JSON.stringify({ message: 'Missing orderId' }),
-        { status: 400 }
-      );
+      return new Response(JSON.stringify({ message: "Missing orderId" }), {
+        status: 400,
+      });
     }
 
-    const deletedOrder = await prisma.orders.delete({
+    const deletedOrder = await prisma.order.delete({
       where: { id: orderId },
     });
 
     return new Response(
-      JSON.stringify({ message: 'Order deleted successfully', deletedOrder }),
+      JSON.stringify({ message: "Order deleted successfully", deletedOrder }),
       { status: 200 }
     );
   } catch (error) {
     if (error instanceof Error) {
       return new Response(
-        JSON.stringify({ message: 'Error deleting order', error: error.message }),
+        JSON.stringify({
+          message: "Error deleting order",
+          error: error.message,
+        }),
         { status: 500 }
       );
     }
     return new Response(
-      JSON.stringify({ message: 'An unknown error occurred' }),
+      JSON.stringify({ message: "An unknown error occurred" }),
       { status: 500 }
     );
   }
