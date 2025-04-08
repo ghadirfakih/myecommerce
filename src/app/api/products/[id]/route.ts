@@ -61,15 +61,15 @@ export async function PUT(
   }
 }
 
+// Delete a product
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    // Ensure params is awaited properly
-    const { id } = await params; // Await the params before using it
+    const { id } = params; // Correct way to handle params
 
-    console.log("Deleting product with ID:", id); // Log the ID being deleted
+    console.log("Deleting product with ID:", id);
 
     const deletedProduct = await prisma.product.delete({
       where: { id: String(id) },
@@ -77,7 +77,7 @@ export async function DELETE(
 
     if (!deletedProduct) {
       return NextResponse.json(
-        { message: "Product not found" },
+        { error: "Product not found" },
         { status: 404 }
       );
     }

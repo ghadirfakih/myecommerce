@@ -1,9 +1,9 @@
-import ProtectedLayout from "../app/components/ProtectedLayout";
+// app/home/page.tsx
+
+import Dashboard from "./dashboard/page";
 
 export default function Home() {
   return (
-    <ProtectedLayout>
-      <h1 className="text-xl font-bold">Welcome to Dashboard</h1>
-    </ProtectedLayout>
+<Dashboard></Dashboard>
   );
 }

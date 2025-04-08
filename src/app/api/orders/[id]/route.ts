@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
@@ -24,24 +24,21 @@ export async function GET(
   }
 }
 
+
 export async function DELETE(
-  req: Request,
-  { params }: { params: { orderId: string } }
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { orderId } = params;
+    const orderId = params.id;
 
-    // Delete the order from the database
     const deletedOrder = await prisma.order.delete({
       where: { id: orderId },
     });
 
-    return NextResponse.json(deletedOrder); // Return the deleted order info
+    return NextResponse.json(deletedOrder, { status: 200 });
   } catch (error) {
-    console.error("Error deleting order:", error);
-    return NextResponse.json(
-      { message: "Error deleting order" },
-      { status: 500 }
-    );
+    console.error('Error deleting order:', error);
+    return NextResponse.json({ message: 'Failed to delete order' }, { status: 500 });
   }
 }

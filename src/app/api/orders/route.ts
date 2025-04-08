@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(req: unknown) {
   try {
     const orders = await prisma.order.findMany({
       include: {

@@ -4,14 +4,14 @@ import Link from 'next/link';
 
 interface Order {
   id: string;
-  customer: {
-    name: string;
-    email: string;
+  customer?: {
+    name?: string;
+    email?: string;
   };
-  products: {
+  product?: {
     name: string;
-    quantity: number;
-  }[];
+    price: number;
+  };
   totalPrice: number;
   status: string;
 }
@@ -24,13 +24,12 @@ const OrderList: React.FC = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch('/api/orders');
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders');
-        }
+        if (!response.ok) throw new Error('Failed to fetch orders');
         const data = await response.json();
+        console.log('Fetched orders:', data);
         setOrders(data);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
+        console.error(error);
         setError('Error fetching orders');
       }
     };
@@ -43,22 +42,18 @@ const OrderList: React.FC = () => {
       const response = await fetch(`/api/orders/${orderId}`, {
         method: 'DELETE',
       });
-
       if (response.ok) {
-        // Remove the order from the state after successful deletion
         setOrders(orders.filter(order => order.id !== orderId));
       } else {
         throw new Error('Failed to delete order');
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      console.error(error);
       setError('Error deleting order');
     }
   };
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="p-6">
@@ -73,7 +68,7 @@ const OrderList: React.FC = () => {
           <tr>
             <th className="border px-4 py-2">Order ID</th>
             <th className="border px-4 py-2">Customer</th>
-            <th className="border px-4 py-2">Products</th>
+            <th className="border px-4 py-2">Product</th>
             <th className="border px-4 py-2">Total Price</th>
             <th className="border px-4 py-2">Status</th>
             <th className="border px-4 py-2">Actions</th>
@@ -83,11 +78,15 @@ const OrderList: React.FC = () => {
           {orders.map((order) => (
             <tr key={order.id}>
               <td className="border px-4 py-2">{order.id}</td>
-              <td className="border px-4 py-2">{order.customer.name}</td>
               <td className="border px-4 py-2">
-                {order.products.map((product, index) => (
-                  <div key={index}>{product.name} (x{product.quantity})</div>
-                ))}
+                {order.customer?.name ?? 'Unknown Customer'}
+              </td>
+              <td className="border px-4 py-2">
+                {order.product ? (
+                  <div>{order.product.name} (${order.product.price})</div>
+                ) : (
+                  <span>No product</span>
+                )}
               </td>
               <td className="border px-4 py-2">${order.totalPrice}</td>
               <td className="border px-4 py-2">{order.status}</td>
